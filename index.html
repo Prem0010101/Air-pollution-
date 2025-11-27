@@ -1,372 +1,403 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
   <title>Air Pollution Awareness</title>
+
   <style>
+    :root {
+      --bg: #f8fbff;
+      --text: #1a1a1a;
+      --accent: #00b4d8;
+      --accent-2: #0096c7;
+      --card: #ffffff;
+      --heading: #0d1b2a;
+      --footer-bg: #0d1b2a;
+      --footer-text: #ffffff;
+    }
+
+    .dark {
+      --bg: #0b1117;
+      --text: #e8eef5;
+      --accent: #22c3ee;
+      --accent-2: #17a2cc;
+      --card: #0f1722;
+      --heading: #cfe7ff;
+      --footer-bg: #070c12;
+      --footer-text: #dce8f5;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
     }
 
     body {
-      background: #f8fbff;
-      color: #1a1a1a;
+      background: var(--bg);
+      color: var(--text);
       line-height: 1.6;
       scroll-behavior: smooth;
     }
 
-    /* Hero Section */
+    /* THEME TOGGLE */
+    .theme-toggle {
+      position: fixed;
+      right: 14px;
+      top: 14px;
+      background: var(--accent);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 100;
+    }
+
+    /* HERO SECTION */
     .hero {
-      background: url("https://images.unsplash.com/photo-1508264165352-258a6f21e8b0") no-repeat center/cover;
-      height: 100vh;
+      position: relative;
+      height: 85vh;
+      background: url("images/hero.jpg") no-repeat center/cover;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
       text-align: center;
-      color: white;
       padding: 20px;
     }
 
+    /* Dark overlay */
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(2px);
+    }
+
+    .hero-content {
+      position: relative;
+      color: white;
+      z-index: 2;
+      animation: fadeInHero 1.4s ease forwards;
+    }
+
     .hero h1 {
-      font-size: 3rem;
-      text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
-      margin-bottom: 20px;
-      animation: fadeInDown 1s ease;
+      font-size: clamp(2.4rem, 4vw, 3.5rem);
+      margin-bottom: 12px;
+      opacity: 0;
+      animation: slideDown 1s ease forwards;
     }
 
     .hero p {
-      font-size: 1.2rem;
-      max-width: 600px;
+      font-size: clamp(1rem, 2.2vw, 1.3rem);
       margin-bottom: 20px;
-      animation: fadeInUp 1.2s ease;
+      opacity: 0;
+      animation: fadeIn 1.2s ease forwards 0.3s;
     }
 
     .hero a {
-      background: #00b4d8;
-      color: white;
-      padding: 12px 24px;
-      border-radius: 25px;
-      text-decoration: none;
+      display: inline-block;
+      padding: 14px 26px;
       font-weight: bold;
+      color: white;
+      background: var(--accent);
+      border-radius: 999px;
+      text-decoration: none;
       transition: 0.3s;
+      opacity: 0;
+      animation: fadeIn 1.3s ease forwards 0.6s;
     }
 
     .hero a:hover {
-      background: #0096c7;
+      background: var(--accent-2);
+      transform: scale(1.05);
     }
 
-    /* Section Styles */
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 0.9rem;
+      animation: bounce 2s infinite;
+      z-index: 3;
+      opacity: 0.85;
+    }
+
+    /* ANIMATIONS */
+    @keyframes slideDown {
+      from { transform: translateY(-40px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes fadeInHero {
+      from { opacity: 0; transform: scale(1.03); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translate(-50%, 0); }
+      50% { transform: translate(-50%, -8px); }
+    }
+
+    /* SECTIONS */
     section {
       padding: 60px 10%;
       opacity: 0;
       transform: translateY(30px);
       transition: all 0.6s ease-out;
     }
-
     section.show {
       opacity: 1;
       transform: translateY(0);
     }
 
     section h2 {
-      font-size: 2.5rem;
       text-align: center;
-      margin-bottom: 40px;
-      color: #0d1b2a;
-      position: relative;
+      margin-bottom: 35px;
+      color: var(--heading);
+      font-size: 2.2rem;
     }
 
     section h2::after {
-      content: '';
+      content: "";
       display: block;
       width: 80px;
       height: 4px;
-      background: #00b4d8;
       margin: 10px auto 0;
-      border-radius: 2px;
+      background: var(--accent);
+      border-radius: 4px;
     }
 
-    /* About Section */
-    .about {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 30px;
-    }
-
-    .about img {
-      flex: 1;
-      max-width: 500px;
-      border-radius: 20px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-    }
-
-    .about-text {
-      flex: 1;
-      min-width: 280px;
-    }
-
-    .about-text p {
-      font-size: 1.1rem;
-      margin-bottom: 15px;
-    }
-
-    /* Causes, Effects, Solutions */
+    /* GRID CARDS */
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 20px;
     }
 
     .card {
-      background: white;
-      padding: 25px;
+      background: var(--card);
+      padding: 20px;
       border-radius: 15px;
       text-align: center;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      transition: 0.3s;
     }
 
     .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
     }
 
     .card img {
       width: 100%;
-      border-radius: 10px;
-      margin-bottom: 15px;
+      height: 190px;
+      border-radius: 12px;
+      object-fit: cover;
+      margin-bottom: 12px;
     }
 
-    .card h3 {
-      margin-bottom: 10px;
-      color: #0077b6;
-    }
-
-    /* Statistics */
+    /* STATS */
     .stats {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      gap: 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
       text-align: center;
     }
 
     .stat {
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-      width: 200px;
+      background: var(--card);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
       transition: 0.3s;
     }
 
     .stat:hover {
-      transform: scale(1.05);
-      background: #e0f7fa;
+      transform: translateY(-5px);
     }
 
     .stat h3 {
+      color: var(--accent-2);
       font-size: 2rem;
-      color: #0096c7;
     }
 
-    /* Gallery */
+    /* GALLERY */
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
     }
 
     .gallery img {
       width: 100%;
+      height: 180px;
+      object-fit: cover;
       border-radius: 12px;
-      transition: transform 0.3s ease;
+      transition: 0.3s;
     }
 
     .gallery img:hover {
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
 
-    /* Footer */
+    /* FOOTER */
     footer {
-      background: #0d1b2a;
-      color: white;
       text-align: center;
-      padding: 30px;
-      margin-top: 50px;
-    }
-
-    footer a {
-      color: #00b4d8;
-      text-decoration: none;
-      margin: 0 10px;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    @keyframes fadeInDown {
-      from {opacity: 0; transform: translateY(-30px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
-
-    @keyframes fadeInUp {
-      from {opacity: 0; transform: translateY(30px);}
-      to {opacity: 1; transform: translateY(0);}
+      background: var(--footer-bg);
+      color: var(--footer-text);
+      padding: 35px 20px;
+      margin-top: 40px;
     }
   </style>
 </head>
+
 <body>
 
-  <!-- Hero -->
+  <!-- THEME BUTTON -->
+  <button class="theme-toggle" id="themeBtn">Toggle Theme</button>
+
+  <!-- HERO -->
   <section class="hero">
-    <h1>Together Against Air Pollution</h1>
-    <p>Clean air is essential for life. Let’s understand the causes, effects, and solutions to combat air pollution.</p>
-    <a href="#about">Learn More</a>
+    <div class="hero-content">
+      <h1>Breathe Easier</h1>
+      <p>Understanding & Combating Air Pollution</p>
+      <a href="#about">Learn More</a>
+    </div>
+
+    <div class="scroll-indicator">⬇ Scroll Down</div>
   </section>
 
-  <!-- About -->
+  <!-- ABOUT -->
   <section id="about">
     <h2>About Air Pollution</h2>
-    <div class="about">
-      <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b" alt="Polluted City">
-      <div class="about-text">
-        <p>Air pollution refers to the contamination of the atmosphere by harmful substances such as gases, smoke, dust, and chemicals. It poses a serious risk to human health, ecosystems, and the planet’s climate.</p>
-        <p>According to the WHO, air pollution kills over 7 million people every year. It is one of the world’s largest environmental health risks.</p>
-      </div>
-    </div>
+    <p>Air pollution refers to harmful substances in the atmosphere, such as gases, chemicals, smoke, and particulate matter. It impacts both the environment and human health.</p>
   </section>
 
-  <!-- Causes -->
+  <!-- CAUSES -->
   <section id="causes">
     <h2>Main Causes</h2>
     <div class="cards">
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70" alt="Vehicles">
+        <img src="images/vehicles.jpg">
         <h3>Vehicles</h3>
-        <p>Exhaust from cars and trucks releases carbon monoxide, nitrogen oxides, and particulate matter into the air.</p>
+        <p>Emits nitrogen oxides, carbon monoxide, and particulate matter.</p>
       </div>
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1584270354949-1a17a9f8b02f" alt="Industry">
+        <img src="images/industry.jpg">
         <h3>Industries</h3>
-        <p>Factories emit greenhouse gases and pollutants that harm both the environment and human health.</p>
+        <p>Factories release harmful pollutants into the atmosphere.</p>
       </div>
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1604371736450-0f8779b9b9d1" alt="Burning Fossil Fuels">
+        <img src="images/fossil.jpg">
         <h3>Fossil Fuels</h3>
-        <p>Burning coal, oil, and gas produces harmful emissions like sulfur dioxide and carbon dioxide.</p>
+        <p>Burning coal, oil, and gas increases toxic emissions.</p>
       </div>
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1573496359142-b9c2a63a53ee" alt="Deforestation">
+        <img src="images/deforestation.jpg">
         <h3>Deforestation</h3>
-        <p>Trees absorb carbon dioxide. Cutting them down increases CO₂ levels and reduces air quality.</p>
+        <p>Cutting trees reduces CO₂ absorption and worsens air quality.</p>
       </div>
     </div>
   </section>
 
-  <!-- Effects -->
+  <!-- EFFECTS -->
   <section id="effects">
     <h2>Effects of Air Pollution</h2>
     <div class="cards">
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b" alt="Health">
+        <img src="images/health.jpg">
         <h3>Health Risks</h3>
-        <p>Causes asthma, lung cancer, heart disease, and reduces overall life expectancy.</p>
+        <p>Asthma, lung cancer, heart disease, and reduced lifespan.</p>
       </div>
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1523920290228-4f321a189f77" alt="Climate">
+        <img src="images/climate.jpg">
         <h3>Climate Change</h3>
-        <p>Pollutants like CO₂ and methane trap heat in the atmosphere, leading to global warming.</p>
+        <p>Greenhouse gases trap heat and warm the planet.</p>
       </div>
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1565120130299-3b8b6fdfd8d2" alt="Nature">
+        <img src="images/nature.jpg">
         <h3>Damage to Nature</h3>
-        <p>Acid rain and smog damage crops, forests, and aquatic ecosystems.</p>
+        <p>Forests, crops, and ecosystems are severely harmed.</p>
       </div>
     </div>
   </section>
 
-  <!-- Solutions -->
+  <!-- SOLUTIONS -->
   <section id="solutions">
     <h2>Solutions</h2>
     <div class="cards">
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09" alt="Public Transport">
+        <img src="images/public-transport.jpg">
         <h3>Use Public Transport</h3>
-        <p>Fewer cars on the road mean less emissions and cleaner air.</p>
+        <p>Reduces traffic emissions and improves air quality.</p>
       </div>
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1509395176047-4a66953fd231" alt="Renewable Energy">
+        <img src="images/renewable.jpg">
         <h3>Switch to Renewable Energy</h3>
-        <p>Solar, wind, and hydro energy reduce reliance on fossil fuels.</p>
+        <p>Solar and wind energy reduce dependence on fossil fuels.</p>
       </div>
       <div class="card">
-        <img src="https://images.unsplash.com/photo-1617196034179-bf99f9f84642" alt="Tree Planting">
+        <img src="images/trees.jpg">
         <h3>Plant More Trees</h3>
-        <p>Trees act as natural air filters by absorbing carbon dioxide and releasing oxygen.</p>
+        <p>Trees absorb CO₂ and release clean oxygen.</p>
       </div>
     </div>
   </section>
 
-  <!-- Statistics -->
-  <section id="stats">
-    <h2>Air Pollution Statistics</h2>
-    <div class="stats">
-      <div class="stat">
-        <h3>7M+</h3>
-        <p>Deaths annually caused by air pollution</p>
-      </div>
-      <div class="stat">
-        <h3>91%</h3>
-        <p>World’s population breathing polluted air</p>
-      </div>
-      <div class="stat">
-        <h3>40%</h3>
-        <p>Global energy still comes from coal</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Gallery -->
+  <!-- GALLERY -->
   <section id="gallery">
     <h2>Gallery</h2>
     <div class="gallery">
-      <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef" alt="Pollution 1">
-      <img src="https://images.unsplash.com/photo-1541447271551-4b81f0c5a123" alt="Pollution 2">
-      <img src="https://images.unsplash.com/photo-1504350046473-1a4a89d4ca3d" alt="Pollution 3">
-      <img src="https://images.unsplash.com/photo-1523779105320-d1cd346ff52f" alt="Pollution 4">
+      <img src="images/gallery1.jpg">
+      <img src="images/gallery2.jpg">
+      <img src="images/gallery3.jpg">
+      <img src="images/gallery4.jpg">
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer id="contact">
-    <p>Contact Us:</p>
-    <p>Email: <a href="mailto:example@email.com">example@email.com</a></p>
-    <p>Instagram: <a href="https://instagram.com/example" target="_blank">@example</a></p>
+  <!-- FOOTER -->
+  <footer>
     <p>&copy; 2025 Air Pollution Awareness Project</p>
   </footer>
 
   <script>
-    // Scroll animation
+    // Reveal section on scroll
     const sections = document.querySelectorAll("section");
-    const revealOnScroll = () => {
-      const triggerBottom = window.innerHeight * 0.85;
-      sections.forEach(section => {
-        const sectionTop = section.getBoundingClientRect().top;
-        if(sectionTop < triggerBottom) {
-          section.classList.add("show");
-        }
+    const reveal = () => {
+      const trigger = window.innerHeight * 0.85;
+      sections.forEach(s => {
+        if (s.getBoundingClientRect().top < trigger) s.classList.add("show");
       });
     };
-    window.addEventListener("scroll", revealOnScroll);
-    window.addEventListener("load", revealOnScroll);
+    window.addEventListener("scroll", reveal);
+    window.addEventListener("load", reveal);
+
+    // Theme toggle
+    const root = document.documentElement;
+    const button = document.getElementById("themeBtn");
+    const saved = localStorage.getItem("theme");
+    if (saved === "dark") root.classList.add("dark");
+
+    button.onclick = () => {
+      root.classList.toggle("dark");
+      localStorage.setItem("theme", root.classList.contains("dark") ? "dark" : "light");
+    };
   </script>
+
 </body>
 </html>
+    
